@@ -13,7 +13,10 @@ serve(async (req: Request) => {
   try {
     // Handle GET request - fetch messages
     if (req.method === "GET") {
-      const { data, error } = await supabase.from("messages").select("*");
+      const { data, error } = await supabase
+        .from("messages")
+        .select("*")
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
       return new Response(JSON.stringify(data), { headers });
