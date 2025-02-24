@@ -13,10 +13,7 @@ serve(async (req: Request) => {
   try {
     // Handle GET request - fetch messages
     if (req.method === "GET") {
-      const { data, error } = await supabase
-        .from("messages")
-        .select("*")
-        .order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("messages").select("*");
 
       if (error) throw error;
       return new Response(JSON.stringify(data), { headers });
@@ -26,22 +23,25 @@ serve(async (req: Request) => {
     if (req.method === "POST") {
       const { message } = await req.json();
       const { error } = await supabase.from("messages").insert([{ message }]);
-      
+
       if (error) throw error;
-      return new Response(JSON.stringify({ success: true, message: "Message sent!" }), { headers });
+      return new Response(
+        JSON.stringify({ success: true, message: "Message sent!" }),
+        { headers }
+      );
     }
 
     // Handle unsupported methods
-    return new Response(JSON.stringify({ error: "Method not allowed" }), { 
-      status: 405, 
-      headers 
+    return new Response(JSON.stringify({ error: "Method not allowed" }), {
+      status: 405,
+      headers,
     });
-    
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    return new Response(JSON.stringify({ error: errorMessage }), { 
-      status: 500, 
-      headers 
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    return new Response(JSON.stringify({ error: errorMessage }), {
+      status: 500,
+      headers,
     });
   }
 });
